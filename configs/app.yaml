@@ -1,0 +1,36 @@
+# RAG pipeline configuration. Everything that affects quality lives here so an
+# eval can attribute a score change to a specific config change.
+
+corpus_dir: data/corpus
+collection: grounded_rag
+
+chunking:
+  max_tokens: 400        # token-aware; see src/rag/chunking.py
+  overlap_tokens: 60
+
+embedding:
+  model: text-embedding-3-small
+  dim: 1536
+
+retrieval:
+  top_k: 8               # candidates pulled from the vector DB
+  rerank: true          # rerank down to final_k with a cross-encoder / Cohere
+  final_k: 4
+  min_score: 0.30       # below this, the pipeline abstains ("I don't know")
+
+generation:
+  model: gpt-4o-mini
+  temperature: 0
+  # The citation-required system prompt. Enforced downstream by evals/citations.py.
+  system: |
+    You answer strictly from the provided sources. Every sentence that states a fact
+    MUST end with a citation marker like [S1] referring to the source it came from.
+    If the sources do not contain the answer, reply exactly: "I don't know based on the
+    provided sources." Do not use outside knowledge.
+
+# Metrics gated in CI. A drop beyond max_drop fails the PR.
+tracked_metrics:
+  - faithfulness
+  - context_recall
+gate:
+  max_drop: 0.03

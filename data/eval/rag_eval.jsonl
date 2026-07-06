@@ -1,0 +1,6 @@
+{"id": "q1", "question": "How long do I have to request a refund on the Pro plan?", "reference_answer": "Within 30 days of purchase.", "expected_doc_ids": ["refund-policy"]}
+{"id": "q2", "question": "Are annual subscriptions refundable after 14 days?", "reference_answer": "No, annual plans are non-refundable after 14 days but stay active until the end of the billing period.", "expected_doc_ids": ["refund-policy"]}
+{"id": "q3", "question": "What encryption is used for data at rest?", "reference_answer": "AES-256.", "expected_doc_ids": ["security-faq"]}
+{"id": "q4", "question": "Is SSO available on the Pro plan?", "reference_answer": "No, SSO via SAML is only available on the Enterprise plan.", "expected_doc_ids": ["security-faq"]}
+{"id": "q5", "question": "Can I get a refund for extra storage add-ons?", "reference_answer": "No, one-time add-on purchases such as extra storage are non-refundable.", "expected_doc_ids": ["refund-policy"]}
+{"id": "q6", "question": "What is the airspeed velocity of an unladen swallow?", "reference_answer": "I don't know based on the provided sources.", "expected_doc_ids": []}

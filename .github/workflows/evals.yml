@@ -1,0 +1,30 @@
+name: rag-evals
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v3
+        with:
+          enable-cache: true
+      - name: Install
+        run: uv pip install --system -e ".[dev,eval]"
+
+      # Deterministic core: chunking, citation logic, retriever thresholds.
+      - name: Unit tests
+        run: pytest
+
+      # Live RAG evals (needs a running Qdrant + keys). Uncomment once wired.
+      # - name: Retrieval regression
+      #   env: { OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }} }
+      #   run: python -m evals.retrieval_regression --data data/eval/rag_eval.jsonl
+      # - name: Ragas faithfulness gate
+      #   env: { OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }} }
+      #   run: python -m evals.run_ragas --config configs/app.yaml --data data/eval/rag_eval.jsonl
