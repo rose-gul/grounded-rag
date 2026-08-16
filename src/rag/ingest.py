@@ -49,7 +49,7 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--config", default="configs/app.yaml")
     args = ap.parse_args()
-    cfg = yaml.safe_load(Path(args.config).read_text())
+    cfg = yaml.safe_load(Path(args.config).read_text(encoding="utf-8"))
 
     docs = load_corpus(cfg["corpus_dir"])
     chunks = build_chunks(docs, cfg["chunking"]["max_tokens"], cfg["chunking"]["overlap_tokens"])

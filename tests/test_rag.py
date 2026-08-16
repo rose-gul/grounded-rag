@@ -26,6 +26,18 @@ def test_chunk_overlap_shares_content():
     chunks = chunk_text(text, max_tokens=8, overlap_tokens=4)
     # consecutive chunks should share at least one sentence due to overlap
     assert len(chunks) >= 2
+    for prev, nxt in zip(chunks, chunks[1:]):
+        prev_sents = {s for s in prev.split(". ") if s}
+        assert any(s in nxt for s in prev_sents)
+
+
+def test_oversized_sentence_is_not_carried_as_overlap():
+    """A sentence longer than overlap_tokens must not be duplicated forward —
+    otherwise it reappears in every following chunk and blows the token budget."""
+    long_sentence = " ".join(["word"] * 60)
+    text = f"{long_sentence}. Alpha one. Bravo two. Charlie three."
+    chunks = chunk_text(text, max_tokens=20, overlap_tokens=5)
+    assert sum(1 for c in chunks if long_sentence in c) == 1
 
 
 def test_chunk_rejects_bad_params():

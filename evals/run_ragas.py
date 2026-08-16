@@ -14,7 +14,8 @@ from rag.schemas import EvalCase
 
 
 def load_eval(path: str) -> list[EvalCase]:
-    return [EvalCase(**json.loads(l)) for l in Path(path).read_text().splitlines() if l.strip()]
+    lines = Path(path).read_text(encoding="utf-8").splitlines()
+    return [EvalCase(**json.loads(line)) for line in lines if line.strip()]
 
 
 def build_ragas_dataset(cases: list[EvalCase], pipeline) -> list[dict]:
@@ -36,6 +37,7 @@ def main() -> None:
     ap.add_argument("--config", default="configs/app.yaml")
     ap.add_argument("--data", default="data/eval/rag_eval.jsonl")
     args = ap.parse_args()
+    print(f"config={args.config} data={args.data}")
 
     # TODO(you) — once the pipeline is wired:
     #   from datasets import Dataset

@@ -22,6 +22,15 @@ def load_eval(path: str) -> list[EvalCase]:
     return cases
 
 
+def _say(msg: str) -> None:
+    """print() that survives a console whose codec isn't utf-8 (e.g. Windows
+    cp1252). A CI gate must never die on its own status line."""
+    try:
+        print(msg)
+    except UnicodeEncodeError:
+        print(msg.encode("ascii", "replace").decode("ascii"))
+
+
 def recall_at_k(expected_doc_ids: list[str], retrieved: list[Chunk]) -> float:
     """Fraction of expected docs that showed up in the retrieved chunks."""
     if not expected_doc_ids:
@@ -40,11 +49,11 @@ def run(data_path: str, retrieve_fn, threshold: float = 1.0) -> int:
         if r < threshold:
             failures.append((case.id, r))
     if failures:
-        print("❌ RETRIEVAL REGRESSION — expected docs not retrieved:")
+        _say("❌ RETRIEVAL REGRESSION — expected docs not retrieved:")
         for cid, r in failures:
-            print(f"   {cid}: recall {r:.2f} < {threshold}")
+            _say(f"   {cid}: recall {r:.2f} < {threshold}")
         return 1
-    print(f"✅ retrieval regression passed on {len(cases)} cases (recall ≥ {threshold})")
+    _say(f"✅ retrieval regression passed on {len(cases)} cases (recall ≥ {threshold})")
     return 0
 
 

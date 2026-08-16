@@ -34,7 +34,8 @@ def load_config(path: str = "configs/app.yaml") -> dict:
 
 def build_pipeline(config_path: str = "configs/app.yaml") -> RagPipeline:
     """TODO(you): construct the Qdrant-backed VectorStore and Retriever here."""
-    cfg = load_config(config_path)
+    load_config(config_path)   # validates the config exists/parses before we go further
+    # cfg = load_config(config_path)
     # store = QdrantVectorStore(cfg["collection"], cfg["embedding"])   # you implement
     # retriever = Retriever(store, **cfg["retrieval"])
     # return RagPipeline(retriever, cfg["generation"])

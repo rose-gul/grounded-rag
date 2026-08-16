@@ -50,12 +50,17 @@ def chunk_text(
 
 
 def _tail_overlap(sentences: list[str], overlap_tokens: int) -> tuple[list[str], int]:
-    """Take sentences from the end until we've accumulated ~overlap_tokens."""
+    """Take sentences from the end until we've accumulated ~overlap_tokens.
+
+    The budget is never exceeded: a single sentence longer than overlap_tokens is
+    dropped rather than carried forward, otherwise an oversized sentence would be
+    duplicated wholesale into every following chunk.
+    """
     tail: list[str] = []
     tok = 0
     for sent in reversed(sentences):
         st = _approx_tokens(sent)
-        if tok + st > overlap_tokens and tail:
+        if tok + st > overlap_tokens:
             break
         tail.insert(0, sent)
         tok += st
